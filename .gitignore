@@ -1,0 +1,29 @@
+# Android Studio
+.idea/
+*.iml
+
+# Build outputs
+build/
+**/build/
+
+# Local configuration (IMPORTANT)
+local.properties
+
+# Gradle
+.gradle/
+
+# Android Studio cache / native builds
+.externalNativeBuild/
+.cxx/
+captures/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# APK / build outputs
+*.apk
+*.aab
