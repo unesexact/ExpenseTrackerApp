@@ -11,7 +11,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.expensetracker.R;
 import com.example.expensetracker.model.Expense;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.Locale;
 
 public class ExpenseAdapter extends RecyclerView.Adapter<ExpenseAdapter.ExpenseViewHolder> {
 
@@ -39,11 +42,14 @@ public class ExpenseAdapter extends RecyclerView.Adapter<ExpenseAdapter.ExpenseV
         Expense expense = expenseList.get(position);
         holder.tvExpenseTitle.setText(expense.getTitle());
 
-        holder.tvExpenseAmount.setText(String.valueOf(expense.getAmount()));
+        holder.tvExpenseAmount.setText(String.format(Locale.getDefault(), "%.2f MAD", expense.getAmount()));
+        ;
 
         holder.tvExpenseCategory.setText(expense.getCategory());
 
-        holder.tvExpenseDate.setText(String.valueOf(expense.getDate()));
+        SimpleDateFormat sdf = new SimpleDateFormat("dd MMM yyyy", Locale.getDefault());
+
+        holder.tvExpenseDate.setText(sdf.format(new Date(expense.getDate())));
 
     }
 

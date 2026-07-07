@@ -61,4 +61,18 @@ public class MainActivity extends AppCompatActivity {
             return insets;
         });
     }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        if (dbHelper != null) {
+
+            expenseList.clear();
+
+            expenseList.addAll(dbHelper.getAllExpenses());
+
+            adapter.notifyDataSetChanged();
+        }
+    }
 }
