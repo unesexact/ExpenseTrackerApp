@@ -10,11 +10,20 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.expensetracker.adapter.ExpenseAdapter;
+import com.example.expensetracker.database.ExpenseDbHelper;
+import com.example.expensetracker.model.Expense;
+
+import java.util.ArrayList;
+
 import com.example.expensetracker.R;
 
 public class MainActivity extends AppCompatActivity {
 
     private RecyclerView recyclerView;
+    private ExpenseAdapter adapter;
+    private ExpenseDbHelper dbHelper;
+    private ArrayList<Expense> expenseList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,6 +34,14 @@ public class MainActivity extends AppCompatActivity {
         recyclerView = findViewById(R.id.rvExpenses);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        dbHelper = new ExpenseDbHelper(this);
+
+        expenseList = dbHelper.getAllExpenses();
+
+        adapter = new ExpenseAdapter(expenseList);
+
+        recyclerView.setAdapter(adapter);
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
