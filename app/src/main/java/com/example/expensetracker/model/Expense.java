@@ -23,15 +23,43 @@ public class Expense {
         this.date = date;
     }
 
-    public int getId() { return id; }
-    public String getTitle() { return title; }
-    public double getAmount() { return amount; }
-    public String getCategory() { return category; }
-    public long getDate() { return date; }
+    public int getId() {
+        return id;
+    }
 
-    public void setId(int id) { this.id = id; }
-    public void setTitle(String title) { this.title = title; }
-    public void setAmount(double amount) { this.amount = amount; }
-    public void setCategory(String category) { this.category = category; }
-    public void setDate(long date) { this.date = date; }
+    public String getTitle() {
+        return title;
+    }
+
+    public double getAmount() {
+        return amount;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public long getDate() {
+        return date;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setAmount(double amount) {
+        this.amount = amount;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
+    }
+
+    public void setDate(long date) {
+        this.date = date;
+    }
 }
