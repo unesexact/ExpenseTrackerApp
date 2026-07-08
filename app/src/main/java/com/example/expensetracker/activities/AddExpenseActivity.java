@@ -8,6 +8,11 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.view.LayoutInflater;
+import android.view.View;
+
+import androidx.appcompat.app.AlertDialog;
+
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -169,24 +174,36 @@ public class AddExpenseActivity extends AppCompatActivity {
 
     private void deleteExpense() {
 
-        new androidx.appcompat.app.AlertDialog.Builder(this)
-                .setTitle("Delete Expense")
-                .setMessage("Are you sure you want to delete this expense?")
-                .setPositiveButton("Delete", (dialog, which) -> {
+        View dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_delete_expense, null);
 
-                    int rows = dbHelper.deleteExpense(expenseId);
 
-                    if (rows > 0) {
-                        Toast.makeText(this, "Expense deleted", Toast.LENGTH_SHORT).show();
-                        finish();
-                    } else {
-                        Toast.makeText(this, "Delete failed", Toast.LENGTH_SHORT).show();
-                    }
+        AlertDialog dialog = new AlertDialog.Builder(this).setView(dialogView).create();
 
-                })
-                .setNegativeButton("Cancel", null)
-                .show();
 
+        Button btnCancel = dialogView.findViewById(R.id.btnCancelDelete);
+        Button btnDelete = dialogView.findViewById(R.id.btnConfirmDelete);
+
+
+        btnCancel.setOnClickListener(v -> dialog.dismiss());
+
+
+        btnDelete.setOnClickListener(v -> {
+
+            int rows = dbHelper.deleteExpense(expenseId);
+
+
+            if (rows > 0) {
+
+                Toast.makeText(this, "Expense deleted", Toast.LENGTH_SHORT).show();
+
+                dialog.dismiss();
+                finish();
+
+            }
+
+        });
+
+
+        dialog.show();
     }
-
 }
