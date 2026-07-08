@@ -50,10 +50,13 @@ public class ExpenseAdapter extends RecyclerView.Adapter<ExpenseAdapter.ExpenseV
 
         holder.tvExpenseTitle.setText(expense.getTitle());
         holder.tvExpenseAmount.setText(String.format(Locale.getDefault(), "%.2f MAD", expense.getAmount()));
-        holder.tvExpenseCategory.setText(expense.getCategory());
-
         SimpleDateFormat sdf = new SimpleDateFormat("dd MMM yyyy", Locale.getDefault());
-        holder.tvExpenseDate.setText(sdf.format(new Date(expense.getDate())));
+
+        String date = sdf.format(new Date(expense.getDate()));
+
+        holder.tvExpenseCategory.setText(expense.getCategory() + " - " + date);
+
+        holder.tvExpenseDate.setVisibility(View.GONE);
 
         holder.itemView.setOnClickListener(v -> listener.onExpenseClick(expense));
 
