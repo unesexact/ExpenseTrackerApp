@@ -2,6 +2,7 @@ package com.example.expensetracker.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -33,7 +34,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView tvTotalAmount;
     private Spinner spinnerCategoryFilter;
     private Spinner spinnerMonthFilter;
-
+    private TextView tvEmptyState;
     private String selectedCategory = "All";
     private int selectedMonth = -1;
     private int selectedYear = -1;
@@ -46,6 +47,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         recyclerView = findViewById(R.id.rvExpenses);
+        tvEmptyState = findViewById(R.id.tvEmptyState);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         dbHelper = new ExpenseDbHelper(this);
@@ -102,6 +104,7 @@ public class MainActivity extends AppCompatActivity {
             expenseList.addAll(dbHelper.getAllExpenses());
             adapter.notifyDataSetChanged();
             updateTotalExpenses();
+            updateEmptyState();
 
         }
     }
@@ -208,9 +211,23 @@ public class MainActivity extends AppCompatActivity {
 
 
         adapter.notifyDataSetChanged();
-
-
         updateTotalExpenses();
+        updateEmptyState();
+    }
+
+    private void updateEmptyState() {
+
+        if (expenseList.isEmpty()) {
+
+            tvEmptyState.setVisibility(View.VISIBLE);
+            recyclerView.setVisibility(View.GONE);
+
+        } else {
+
+            tvEmptyState.setVisibility(View.GONE);
+            recyclerView.setVisibility(View.VISIBLE);
+
+        }
     }
 
 }
