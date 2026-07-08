@@ -21,13 +21,11 @@ public class ExpenseAdapter extends RecyclerView.Adapter<ExpenseAdapter.ExpenseV
     private ArrayList<Expense> expenseList;
     private OnExpenseClickListener listener;
 
-
     public interface OnExpenseClickListener {
 
         void onExpenseClick(Expense expense);
 
     }
-
 
     public ExpenseAdapter(ArrayList<Expense> expenseList, OnExpenseClickListener listener) {
 
@@ -36,47 +34,30 @@ public class ExpenseAdapter extends RecyclerView.Adapter<ExpenseAdapter.ExpenseV
 
     }
 
-
     @NonNull
     @Override
     public ExpenseViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_expense, parent, false);
-
         return new ExpenseViewHolder(view);
-    }
 
+    }
 
     @Override
     public void onBindViewHolder(@NonNull ExpenseViewHolder holder, int position) {
 
         Expense expense = expenseList.get(position);
 
-
         holder.tvExpenseTitle.setText(expense.getTitle());
-
-
         holder.tvExpenseAmount.setText(String.format(Locale.getDefault(), "%.2f MAD", expense.getAmount()));
-
-
         holder.tvExpenseCategory.setText(expense.getCategory());
 
-
         SimpleDateFormat sdf = new SimpleDateFormat("dd MMM yyyy", Locale.getDefault());
-
-
         holder.tvExpenseDate.setText(sdf.format(new Date(expense.getDate())));
 
-
-        // Card click
-        holder.itemView.setOnClickListener(v -> {
-
-            listener.onExpenseClick(expense);
-
-        });
+        holder.itemView.setOnClickListener(v -> listener.onExpenseClick(expense));
 
     }
-
 
     @Override
     public int getItemCount() {
@@ -85,32 +66,24 @@ public class ExpenseAdapter extends RecyclerView.Adapter<ExpenseAdapter.ExpenseV
 
     }
 
-
     public static class ExpenseViewHolder extends RecyclerView.ViewHolder {
-
 
         TextView tvExpenseTitle;
         TextView tvExpenseAmount;
         TextView tvExpenseCategory;
         TextView tvExpenseDate;
 
-
         public ExpenseViewHolder(@NonNull View itemView) {
 
             super(itemView);
 
-
             tvExpenseTitle = itemView.findViewById(R.id.tvExpenseTitle);
-
-
             tvExpenseAmount = itemView.findViewById(R.id.tvExpenseAmount);
-
-
             tvExpenseCategory = itemView.findViewById(R.id.tvExpenseCategory);
-
-
             tvExpenseDate = itemView.findViewById(R.id.tvExpenseDate);
 
         }
+
     }
+
 }

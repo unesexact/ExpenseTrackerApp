@@ -5,7 +5,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <!-- Label -->
     <TextView
         android:id="@+id/tvTotalLabel"
         android:layout_width="wrap_content"
@@ -18,7 +17,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <!-- Total Amount -->
     <TextView
         android:id="@+id/tvTotalAmount"
         android:layout_width="wrap_content"
@@ -30,7 +28,6 @@
         app:layout_constraintStart_toStartOf="@id/tvTotalLabel"
         app:layout_constraintTop_toBottomOf="@id/tvTotalLabel" />
 
-    <!-- RecyclerView -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvExpenses"
         android:layout_width="0dp"
@@ -42,7 +39,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tvTotalAmount" />
 
-    <!-- Floating Action Button -->
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fabAddExpense"
         android:layout_width="wrap_content"

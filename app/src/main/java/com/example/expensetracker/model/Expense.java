@@ -62,4 +62,5 @@ public class Expense {
     public void setDate(long date) {
         this.date = date;
     }
+
 }

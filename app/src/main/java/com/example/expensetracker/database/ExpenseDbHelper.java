@@ -51,9 +51,9 @@ public class ExpenseDbHelper extends SQLiteOpenHelper {
         values.put(COL_DATE, expense.getDate());
 
         long result = db.insert(TABLE_NAME, null, values);
-
         db.close();
         return result;
+
     }
 
     public ArrayList<Expense> getAllExpenses() {
@@ -84,6 +84,7 @@ public class ExpenseDbHelper extends SQLiteOpenHelper {
         db.close();
 
         return expenseList;
+
     }
 
     public int updateExpense(Expense expense) {
@@ -97,9 +98,9 @@ public class ExpenseDbHelper extends SQLiteOpenHelper {
         values.put(COL_DATE, expense.getDate());
 
         int result = db.update(TABLE_NAME, values, COL_ID + "=?", new String[]{String.valueOf(expense.getId())});
-
         db.close();
         return result;
+
     }
 
     public int deleteExpense(int id) {
@@ -107,8 +108,9 @@ public class ExpenseDbHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
 
         int result = db.delete(TABLE_NAME, COL_ID + "=?", new String[]{String.valueOf(id)});
-
         db.close();
         return result;
+
     }
+
 }
