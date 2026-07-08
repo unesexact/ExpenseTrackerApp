@@ -2,6 +2,7 @@ package com.example.expensetracker.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -26,6 +27,7 @@ public class MainActivity extends AppCompatActivity {
     private ExpenseDbHelper dbHelper;
     private ArrayList<Expense> expenseList;
     private FloatingActionButton fabAddExpense;
+    private TextView tvTotalAmount;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,6 +58,7 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setAdapter(adapter);
 
         fabAddExpense = findViewById(R.id.fabAddExpense);
+        tvTotalAmount = findViewById(R.id.tvTotalAmount);
 
         fabAddExpense.setOnClickListener(v -> {
 
@@ -84,8 +87,16 @@ public class MainActivity extends AppCompatActivity {
             expenseList.clear();
             expenseList.addAll(dbHelper.getAllExpenses());
             adapter.notifyDataSetChanged();
+            updateTotalExpenses();
 
         }
+    }
+
+    private void updateTotalExpenses() {
+
+        double total = dbHelper.getTotalExpenses();
+
+        tvTotalAmount.setText(String.format(java.util.Locale.getDefault(), "%.2f MAD", total));
     }
 
 }

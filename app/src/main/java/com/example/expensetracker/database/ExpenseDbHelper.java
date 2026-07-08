@@ -113,4 +113,24 @@ public class ExpenseDbHelper extends SQLiteOpenHelper {
 
     }
 
+    public double getTotalExpenses() {
+
+        double total = 0;
+
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        String query = "SELECT SUM(" + COL_AMOUNT + ") FROM " + TABLE_NAME;
+
+        Cursor cursor = db.rawQuery(query, null);
+
+        if (cursor.moveToFirst()) {
+            total = cursor.getDouble(0);
+        }
+
+        cursor.close();
+        db.close();
+
+        return total;
+    }
+
 }
