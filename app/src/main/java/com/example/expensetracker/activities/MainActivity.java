@@ -2,6 +2,8 @@ package com.example.expensetracker.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
@@ -19,6 +21,7 @@ import com.example.expensetracker.model.Expense;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -28,6 +31,12 @@ public class MainActivity extends AppCompatActivity {
     private ArrayList<Expense> expenseList;
     private FloatingActionButton fabAddExpense;
     private TextView tvTotalAmount;
+    private Spinner spinnerCategoryFilter;
+    private Spinner spinnerMonthFilter;
+
+    private String selectedCategory = "All";
+    private int selectedMonth = -1;
+    private int selectedYear = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,6 +68,8 @@ public class MainActivity extends AppCompatActivity {
 
         fabAddExpense = findViewById(R.id.fabAddExpense);
         tvTotalAmount = findViewById(R.id.tvTotalAmount);
+        spinnerCategoryFilter = findViewById(R.id.spinnerCategoryFilter);
+        spinnerMonthFilter = findViewById(R.id.spinnerMonthFilter);
 
         fabAddExpense.setOnClickListener(v -> {
 
@@ -76,6 +87,9 @@ public class MainActivity extends AppCompatActivity {
 
         });
 
+        setupCategoryFilter();
+        setupMonthFilter();
+        selectedYear = Calendar.getInstance().get(Calendar.YEAR);
     }
 
     @Override
@@ -97,6 +111,106 @@ public class MainActivity extends AppCompatActivity {
         double total = dbHelper.getTotalExpenses();
 
         tvTotalAmount.setText(String.format(java.util.Locale.getDefault(), "%.2f MAD", total));
+    }
+
+    private void setupCategoryFilter() {
+
+        String[] categories = {"All", "Food", "Transport", "Bills", "Entertainment", "Shopping", "Health", "Education", "Other"};
+
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, categories);
+
+
+        spinnerCategoryFilter.setAdapter(adapter);
+
+
+        spinnerCategoryFilter.setOnItemSelectedListener(new android.widget.AdapterView.OnItemSelectedListener() {
+
+            @Override
+            public void onItemSelected(android.widget.AdapterView<?> parent, android.view.View view, int position, long id) {
+
+                selectedCategory = categories[position];
+
+                applyFilters();
+
+            }
+
+
+            @Override
+            public void onNothingSelected(android.widget.AdapterView<?> parent) {
+
+            }
+        });
+    }
+
+    private void setupMonthFilter() {
+
+        String[] months = {"All Months", "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
+
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, months);
+
+
+        spinnerMonthFilter.setAdapter(adapter);
+
+
+        spinnerMonthFilter.setOnItemSelectedListener(new android.widget.AdapterView.OnItemSelectedListener() {
+
+
+            @Override
+            public void onItemSelected(android.widget.AdapterView<?> parent, android.view.View view, int position, long id) {
+
+                selectedMonth = position - 1;
+
+                applyFilters();
+
+            }
+
+
+            @Override
+            public void onNothingSelected(android.widget.AdapterView<?> parent) {
+
+            }
+        });
+    }
+
+    private void applyFilters() {
+
+        if (selectedMonth == -1) {
+
+            expenseList.clear();
+
+            if (selectedCategory.equals("All")) {
+
+                expenseList.addAll(dbHelper.getAllExpenses());
+
+            } else {
+
+                expenseList.addAll(dbHelper.getFilteredExpenses(selectedCategory, 0, Long.MAX_VALUE));
+            }
+
+        } else {
+
+            Calendar start = Calendar.getInstance();
+
+            start.set(selectedYear, selectedMonth, 1, 0, 0, 0);
+
+
+            Calendar end = Calendar.getInstance();
+
+            end.set(selectedYear, selectedMonth, start.getActualMaximum(Calendar.DAY_OF_MONTH), 23, 59, 59);
+
+
+            expenseList.clear();
+
+            expenseList.addAll(dbHelper.getFilteredExpenses(selectedCategory, start.getTimeInMillis(), end.getTimeInMillis()));
+        }
+
+
+        adapter.notifyDataSetChanged();
+
+
+        updateTotalExpenses();
     }
 
 }

@@ -133,4 +133,52 @@ public class ExpenseDbHelper extends SQLiteOpenHelper {
         return total;
     }
 
+    public ArrayList<Expense> getFilteredExpenses(String category, long startDate, long endDate) {
+
+        ArrayList<Expense> expenseList = new ArrayList<>();
+
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        String query;
+
+        Cursor cursor;
+
+        if (category.equals("All")) {
+
+            query = "SELECT * FROM " + TABLE_NAME + " WHERE " + COL_DATE + " BETWEEN ? AND ?" + " ORDER BY " + COL_DATE + " DESC";
+
+            cursor = db.rawQuery(query, new String[]{String.valueOf(startDate), String.valueOf(endDate)});
+
+        } else {
+
+            query = "SELECT * FROM " + TABLE_NAME + " WHERE " + COL_CATEGORY + "=? AND " + COL_DATE + " BETWEEN ? AND ?" + " ORDER BY " + COL_DATE + " DESC";
+
+            cursor = db.rawQuery(query, new String[]{category, String.valueOf(startDate), String.valueOf(endDate)});
+        }
+
+
+        if (cursor.moveToFirst()) {
+
+            do {
+
+                int id = cursor.getInt(cursor.getColumnIndexOrThrow(COL_ID));
+                String title = cursor.getString(cursor.getColumnIndexOrThrow(COL_TITLE));
+                double amount = cursor.getDouble(cursor.getColumnIndexOrThrow(COL_AMOUNT));
+                String expenseCategory = cursor.getString(cursor.getColumnIndexOrThrow(COL_CATEGORY));
+                long date = cursor.getLong(cursor.getColumnIndexOrThrow(COL_DATE));
+
+                Expense expense = new Expense(id, title, amount, expenseCategory, date);
+
+                expenseList.add(expense);
+
+            } while (cursor.moveToNext());
+        }
+
+
+        cursor.close();
+        db.close();
+
+        return expenseList;
+    }
+
 }
