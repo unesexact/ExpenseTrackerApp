@@ -27,25 +27,52 @@ public class MainActivity extends AppCompatActivity {
     private ArrayList<Expense> expenseList;
     private FloatingActionButton fabAddExpense;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
+
 
         recyclerView = findViewById(R.id.rvExpenses);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
+
         dbHelper = new ExpenseDbHelper(this);
+
 
         expenseList = dbHelper.getAllExpenses();
 
-        adapter = new ExpenseAdapter(expenseList);
+
+        adapter = new ExpenseAdapter(expenseList, expense -> {
+
+            Intent intent = new Intent(MainActivity.this, AddExpenseActivity.class);
+
+
+            intent.putExtra("id", expense.getId());
+
+            intent.putExtra("title", expense.getTitle());
+
+            intent.putExtra("amount", expense.getAmount());
+
+            intent.putExtra("category", expense.getCategory());
+
+            intent.putExtra("date", expense.getDate());
+
+
+            startActivity(intent);
+
+        });
+
 
         recyclerView.setAdapter(adapter);
 
+
         fabAddExpense = findViewById(R.id.fabAddExpense);
+
 
         fabAddExpense.setOnClickListener(v -> {
 
@@ -55,22 +82,29 @@ public class MainActivity extends AppCompatActivity {
 
         });
 
+
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
+
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+
             return insets;
         });
     }
 
+
     @Override
     protected void onResume() {
         super.onResume();
+
 
         if (dbHelper != null) {
 
             expenseList.clear();
 
             expenseList.addAll(dbHelper.getAllExpenses());
+
 
             adapter.notifyDataSetChanged();
         }

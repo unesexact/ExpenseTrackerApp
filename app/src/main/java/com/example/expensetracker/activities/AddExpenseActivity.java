@@ -29,26 +29,51 @@ public class AddExpenseActivity extends AppCompatActivity {
     private EditText etAmount;
     private ExpenseDbHelper dbHelper;
 
+
+    // Edit mode variables
+    private boolean isEditMode = false;
+    private int expenseId;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_add_expense);
+
+
         spinnerCategory = findViewById(R.id.spinnerCategory);
         tvDate = findViewById(R.id.tvDate);
         btnSaveExpense = findViewById(R.id.btnSaveExpense);
         etTitle = findViewById(R.id.etTitle);
         etAmount = findViewById(R.id.etAmount);
 
+
         dbHelper = new ExpenseDbHelper(this);
+
+
+        String[] categories = {"Food", "Transport", "Bills", "Entertainment", "Shopping", "Health", "Education", "Other"};
+
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, categories);
+
+
+        spinnerCategory.setAdapter(adapter);
+
 
         Calendar calendar = Calendar.getInstance();
 
         selectedDate = calendar.getTimeInMillis();
 
+
+        checkEditMode();
+
+
         updateDateText();
 
+
         tvDate.setOnClickListener(v -> {
+
 
             calendar.setTimeInMillis(selectedDate);
 
@@ -59,6 +84,7 @@ public class AddExpenseActivity extends AppCompatActivity {
 
                         Calendar selected = Calendar.getInstance();
 
+
                         selected.set(year, month, dayOfMonth);
 
 
@@ -66,6 +92,7 @@ public class AddExpenseActivity extends AppCompatActivity {
 
 
                         updateDateText();
+
                     },
 
 
@@ -77,29 +104,69 @@ public class AddExpenseActivity extends AppCompatActivity {
         });
 
 
-        String[] categories = {"Food", "Transport", "Bills", "Entertainment", "Shopping", "Health", "Education", "Other"};
-
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, categories);
-
-        spinnerCategory.setAdapter(adapter);
-
         btnSaveExpense.setOnClickListener(v -> {
 
             saveExpense();
 
         });
 
+    }
+
+
+    private void checkEditMode() {
+
+
+        if (getIntent().hasExtra("id")) {
+
+
+            isEditMode = true;
+
+
+            expenseId = getIntent().getIntExtra("id", -1);
+
+
+            String title = getIntent().getStringExtra("title");
+
+
+            double amount = getIntent().getDoubleExtra("amount", 0);
+
+
+            String category = getIntent().getStringExtra("category");
+
+
+            selectedDate = getIntent().getLongExtra("date", selectedDate);
+
+
+            etTitle.setText(title);
+
+
+            etAmount.setText(String.valueOf(amount));
+
+
+            int position = ((ArrayAdapter<String>) spinnerCategory.getAdapter()).getPosition(category);
+
+
+            spinnerCategory.setSelection(position);
+
+
+            btnSaveExpense.setText("Update Expense");
+
+        }
 
     }
+
 
     private void updateDateText() {
 
         SimpleDateFormat sdf = new SimpleDateFormat("dd MMM yyyy", Locale.getDefault());
 
+
         tvDate.setText(sdf.format(selectedDate));
     }
 
+
     private void saveExpense() {
+
 
         String title = etTitle.getText().toString().trim();
 
@@ -128,34 +195,63 @@ public class AddExpenseActivity extends AppCompatActivity {
 
         double amount;
 
+
         try {
 
             amount = Double.parseDouble(amountText);
 
         } catch (NumberFormatException e) {
 
+
             Toast.makeText(this, "Invalid amount", Toast.LENGTH_SHORT).show();
 
             return;
+
         }
 
 
-        Expense expense = new Expense(title, amount, category, selectedDate);
+        Expense expense;
 
 
-        long id = dbHelper.insertExpense(expense);
+        if (isEditMode) {
 
 
-        if (id != -1) {
-
-            Toast.makeText(this, "Expense saved", Toast.LENGTH_SHORT).show();
+            expense = new Expense(expenseId, title, amount, category, selectedDate);
 
 
-            finish();
+            int rows = dbHelper.updateExpense(expense);
+
+
+            if (rows > 0) {
+
+
+                Toast.makeText(this, "Expense updated", Toast.LENGTH_SHORT).show();
+
+
+                finish();
+
+            }
+
 
         } else {
 
-            Toast.makeText(this, "Failed to save expense", Toast.LENGTH_SHORT).show();
+
+            expense = new Expense(title, amount, category, selectedDate);
+
+
+            long id = dbHelper.insertExpense(expense);
+
+
+            if (id != -1) {
+
+
+                Toast.makeText(this, "Expense saved", Toast.LENGTH_SHORT).show();
+
+
+                finish();
+
+            }
+
         }
 
     }

@@ -19,10 +19,21 @@ import java.util.Locale;
 public class ExpenseAdapter extends RecyclerView.Adapter<ExpenseAdapter.ExpenseViewHolder> {
 
     private ArrayList<Expense> expenseList;
+    private OnExpenseClickListener listener;
 
 
-    public ExpenseAdapter(ArrayList<Expense> expenseList) {
+    public interface OnExpenseClickListener {
+
+        void onExpenseClick(Expense expense);
+
+    }
+
+
+    public ExpenseAdapter(ArrayList<Expense> expenseList, OnExpenseClickListener listener) {
+
         this.expenseList = expenseList;
+        this.listener = listener;
+
     }
 
 
@@ -40,27 +51,43 @@ public class ExpenseAdapter extends RecyclerView.Adapter<ExpenseAdapter.ExpenseV
     public void onBindViewHolder(@NonNull ExpenseViewHolder holder, int position) {
 
         Expense expense = expenseList.get(position);
+
+
         holder.tvExpenseTitle.setText(expense.getTitle());
 
+
         holder.tvExpenseAmount.setText(String.format(Locale.getDefault(), "%.2f MAD", expense.getAmount()));
-        ;
+
 
         holder.tvExpenseCategory.setText(expense.getCategory());
 
+
         SimpleDateFormat sdf = new SimpleDateFormat("dd MMM yyyy", Locale.getDefault());
 
+
         holder.tvExpenseDate.setText(sdf.format(new Date(expense.getDate())));
+
+
+        // Card click
+        holder.itemView.setOnClickListener(v -> {
+
+            listener.onExpenseClick(expense);
+
+        });
 
     }
 
 
     @Override
     public int getItemCount() {
+
         return expenseList.size();
+
     }
 
 
     public static class ExpenseViewHolder extends RecyclerView.ViewHolder {
+
 
         TextView tvExpenseTitle;
         TextView tvExpenseAmount;
@@ -69,12 +96,21 @@ public class ExpenseAdapter extends RecyclerView.Adapter<ExpenseAdapter.ExpenseV
 
 
         public ExpenseViewHolder(@NonNull View itemView) {
+
             super(itemView);
 
+
             tvExpenseTitle = itemView.findViewById(R.id.tvExpenseTitle);
+
+
             tvExpenseAmount = itemView.findViewById(R.id.tvExpenseAmount);
+
+
             tvExpenseCategory = itemView.findViewById(R.id.tvExpenseCategory);
+
+
             tvExpenseDate = itemView.findViewById(R.id.tvExpenseDate);
+
         }
     }
 }
